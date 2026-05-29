@@ -1,0 +1,107 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.baby.mapper.BehaviorMapper">
+
+    <resultMap type="Behavior" id="BehaviorResult">
+        <id     property="behaviorId"   column="behavior_id"    />
+        <result property="babyId"       column="baby_id"        />
+        <result property="behaviorType" column="behavior_type"  />
+        <result property="feedMethod"   column="feed_method"    />
+        <result property="feedAmount"   column="feed_amount"    />
+        <result property="diaperType"   column="diaper_type"    />
+        <result property="playType"     column="play_type"      />
+        <result property="startTime"    column="start_time"     />
+        <result property="endTime"      column="end_time"       />
+        <result property="duration"     column="duration"       />
+        <result property="createBy"     column="create_by"      />
+        <result property="createTime"   column="create_time"    />
+        <result property="updateBy"     column="update_by"      />
+        <result property="updateTime"   column="update_time"    />
+        <result property="remark"       column="remark"         />
+    </resultMap>
+
+    <select id="selectBehaviorList" parameterType="Behavior" resultMap="BehaviorResult">
+        select * from bb_behavior
+        <where>
+            <if test="babyId != null">
+                and baby_id = #{babyId}
+            </if>
+            <if test="behaviorType != null and behaviorType != ''">
+                and behavior_type = #{behaviorType}
+            </if>
+            <if test="feedMethod != null and feedMethod != ''">
+                and feed_method = #{feedMethod}
+            </if>
+            <if test="diaperType != null and diaperType != ''">
+                and diaper_type = #{diaperType}
+            </if>
+            <if test="params.beginTime != null and params.beginTime != ''">
+                and start_time &gt;= #{params.beginTime}
+            </if>
+            <if test="params.endTime != null and params.endTime != ''">
+                and start_time &lt;= #{params.endTime}
+            </if>
+        </where>
+        order by start_time desc
+    </select>
+
+    <select id="selectBehaviorById" parameterType="Long" resultMap="BehaviorResult">
+        select * from bb_behavior where behavior_id = #{behaviorId}
+    </select>
+
+    <insert id="insertBehavior" parameterType="Behavior" useGeneratedKeys="true" keyProperty="behaviorId">
+        insert into bb_behavior(
+            <if test="babyId != null">baby_id,</if>
+            behavior_type,
+            <if test="feedMethod != null and feedMethod != ''">feed_method,</if>
+            <if test="feedAmount != null">feed_amount,</if>
+            <if test="diaperType != null and diaperType != ''">diaper_type,</if>
+            <if test="playType != null and playType != ''">play_type,</if>
+            <if test="startTime != null">start_time,</if>
+            <if test="endTime != null">end_time,</if>
+            <if test="duration != null">duration,</if>
+            <if test="createBy != null and createBy != ''">create_by,</if>
+            <if test="remark != null">remark,</if>
+            create_time
+        )values(
+            <if test="babyId != null">#{babyId},</if>
+            #{behaviorType},
+            <if test="feedMethod != null and feedMethod != ''">#{feedMethod},</if>
+            <if test="feedAmount != null">#{feedAmount},</if>
+            <if test="diaperType != null and diaperType != ''">#{diaperType},</if>
+            <if test="playType != null and playType != ''">#{playType},</if>
+            <if test="startTime != null">#{startTime},</if>
+            <if test="endTime != null">#{endTime},</if>
+            <if test="duration != null">#{duration},</if>
+            <if test="createBy != null and createBy != ''">#{createBy},</if>
+            <if test="remark != null">#{remark},</if>
+            #{createTime}
+        )
+    </insert>
+
+    <update id="updateBehavior" parameterType="Behavior">
+        update bb_behavior
+        <set>
+            <if test="babyId != null">baby_id = #{babyId},</if>
+            <if test="behaviorType != null and behaviorType != ''">behavior_type = #{behaviorType},</if>
+            <if test="feedMethod != null and feedMethod != ''">feed_method = #{feedMethod},</if>
+            <if test="feedAmount != null">feed_amount = #{feedAmount},</if>
+            <if test="diaperType != null and diaperType != ''">diaper_type = #{diaperType},</if>
+            <if test="playType != null">play_type = #{playType},</if>
+            <if test="startTime != null">start_time = #{startTime},</if>
+            <if test="endTime != null">end_time = #{endTime},</if>
+            <if test="duration != null">duration = #{duration},</if>
+            <if test="updateBy != null and updateBy != ''">update_by = #{updateBy},</if>
+            <if test="remark != null">remark = #{remark},</if>
+            update_time = #{updateTime}
+        </set>
+        where behavior_id = #{behaviorId}
+    </update>
+
+    <delete id="deleteBehaviorById" parameterType="Long">
+        delete from bb_behavior where behavior_id = #{behaviorId}
+    </delete>
+
+</mapper>

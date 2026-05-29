@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.baby.mapper.MeasurementMapper">
+
+    <resultMap type="Measurement" id="MeasurementResult">
+        <id     property="measureId"   column="measure_id"     />
+        <result property="babyId"      column="baby_id"        />
+        <result property="measureType" column="measure_type"   />
+        <result property="value"       column="value"          />
+        <result property="measureDate" column="measure_date"   />
+        <result property="createBy"    column="create_by"      />
+        <result property="createTime"  column="create_time"    />
+        <result property="updateBy"    column="update_by"      />
+        <result property="updateTime"  column="update_time"    />
+        <result property="remark"      column="remark"         />
+    </resultMap>
+
+    <select id="selectMeasurementList" parameterType="Measurement" resultMap="MeasurementResult">
+        select * from bb_measurement
+        <where>
+            <if test="babyId != null">
+                and baby_id = #{babyId}
+            </if>
+            <if test="measureType != null and measureType != ''">
+                and measure_type = #{measureType}
+            </if>
+        </where>
+        order by measure_date desc
+    </select>
+
+    <select id="selectMeasurementById" parameterType="Long" resultMap="MeasurementResult">
+        select * from bb_measurement where measure_id = #{measureId}
+    </select>
+
+    <insert id="insertMeasurement" parameterType="Measurement" useGeneratedKeys="true" keyProperty="measureId">
+        insert into bb_measurement(
+            <if test="babyId != null">baby_id,</if>
+            measure_type,
+            value,
+            measure_date,
+            <if test="createBy != null and createBy != ''">create_by,</if>
+            <if test="remark != null">remark,</if>
+            create_time
+        )values(
+            <if test="babyId != null">#{babyId},</if>
+            #{measureType},
+            #{value},
+            #{measureDate},
+            <if test="createBy != null and createBy != ''">#{createBy},</if>
+            <if test="remark != null">#{remark},</if>
+            #{createTime}
+        )
+    </insert>
+
+    <update id="updateMeasurement" parameterType="Measurement">
+        update bb_measurement
+        <set>
+            <if test="babyId != null">baby_id = #{babyId},</if>
+            <if test="measureType != null and measureType != ''">measure_type = #{measureType},</if>
+            <if test="value != null">value = #{value},</if>
+            <if test="measureDate != null">measure_date = #{measureDate},</if>
+            <if test="updateBy != null and updateBy != ''">update_by = #{updateBy},</if>
+            <if test="remark != null">remark = #{remark},</if>
+            update_time = #{updateTime}
+        </set>
+        where measure_id = #{measureId}
+    </update>
+
+    <delete id="deleteMeasurementById" parameterType="Long">
+        delete from bb_measurement where measure_id = #{measureId}
+    </delete>
+
+</mapper>

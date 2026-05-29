@@ -1,0 +1,92 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.baby.mapper.BabyMapper">
+
+    <resultMap type="Baby" id="BabyResult">
+        <id     property="babyId"     column="baby_id"      />
+        <result property="name"       column="name"         />
+        <result property="gender"     column="gender"       />
+        <result property="birthDate"  column="birth_date"   />
+        <result property="photo"      column="photo"        />
+        <result property="createBy"   column="create_by"    />
+        <result property="createTime" column="create_time"  />
+        <result property="updateBy"   column="update_by"    />
+        <result property="updateTime" column="update_time"  />
+        <result property="remark"     column="remark"       />
+    </resultMap>
+
+    <sql id="selectBabyVo">
+        select baby_id, name, gender, birth_date, photo, create_by, create_time, update_by, update_time, remark
+        from bb_baby
+    </sql>
+
+    <select id="selectBabyList" parameterType="Baby" resultMap="BabyResult">
+        <include refid="selectBabyVo"/>
+        <where>
+            <if test="name != null and name != ''">
+                AND name like concat('%', #{name}, '%')
+            </if>
+            <if test="gender != null and gender != ''">
+                AND gender = #{gender}
+            </if>
+        </where>
+        order by create_time desc
+    </select>
+
+    <select id="selectBabyById" parameterType="Long" resultMap="BabyResult">
+        <include refid="selectBabyVo"/>
+        where baby_id = #{babyId}
+    </select>
+
+    <select id="selectBaby" resultMap="BabyResult">
+        select * from bb_baby limit 1
+    </select>
+
+    <insert id="insertBaby" parameterType="Baby" useGeneratedKeys="true" keyProperty="babyId">
+        insert into bb_baby(
+            <if test="name != null and name != ''">name,</if>
+            <if test="gender != null and gender != ''">gender,</if>
+            <if test="birthDate != null">birth_date,</if>
+            <if test="photo != null and photo != ''">photo,</if>
+            <if test="createBy != null and createBy != ''">create_by,</if>
+            <if test="remark != null">remark,</if>
+            create_time
+        )values(
+            <if test="name != null and name != ''">#{name},</if>
+            <if test="gender != null and gender != ''">#{gender},</if>
+            <if test="birthDate != null">#{birthDate},</if>
+            <if test="photo != null and photo != ''">#{photo},</if>
+            <if test="createBy != null and createBy != ''">#{createBy},</if>
+            <if test="remark != null">#{remark},</if>
+            #{createTime}
+        )
+    </insert>
+
+    <update id="updateBaby" parameterType="Baby">
+        update bb_baby
+        <set>
+            <if test="name != null and name != ''">name = #{name},</if>
+            <if test="gender != null and gender != ''">gender = #{gender},</if>
+            <if test="birthDate != null">birth_date = #{birthDate},</if>
+            <if test="photo != null and photo != ''">photo = #{photo},</if>
+            <if test="updateBy != null and updateBy != ''">update_by = #{updateBy},</if>
+            <if test="remark != null">remark = #{remark},</if>
+            update_time = #{updateTime}
+        </set>
+        where baby_id = #{babyId}
+    </update>
+
+    <delete id="deleteBaby" parameterType="Long">
+        delete from bb_baby where baby_id = #{babyId}
+    </delete>
+
+    <delete id="deleteBabyByIds" parameterType="Long">
+        delete from bb_baby where baby_id in
+        <foreach item="babyId" collection="array" open="(" separator="," close=")">
+            #{babyId}
+        </foreach>
+    </delete>
+
+</mapper>
